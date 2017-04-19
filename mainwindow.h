@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -16,8 +16,7 @@ public:
     ~MainWindow();
 
 private slots:
-
-    void on_action_Help_triggered();
+    void on_action_About_me_triggered();
 
 private:
     Ui::MainWindow *ui;

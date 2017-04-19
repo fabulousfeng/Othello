@@ -13,8 +13,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::on_action_Help_triggered()
+void MainWindow::on_action_About_me_triggered()
 {
-    QMessageBox::information(this,"About", "Copyright © April 2017 by Feng. \nAll rights reserved.\nContact: zhoufeng@umich.edu ");
+    QMessageBox::about(this,"Abuut me", "Copyright © 2017 Feng. All rights reserved.\nContact: zhoufeng@umich.edu");
 }
