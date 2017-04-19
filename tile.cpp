@@ -14,28 +14,12 @@ void Tile::display(int pieceColor)
 
     if(this->pieceColor == WHITE)
     {
-        this->setPixmap(QPixmap(":/Images/pawn_white.svg"));
+        this->setPixmap(QPixmap(":/Images/white.png"));
     }
 
     else if(this->pieceColor == BLACK)
     {
-        this->setPixmap(QPixmap(":/Images/pawn_black.svg"));
-    }
-    else{ // EMPTY
-        this->clear();
-    }
-}
-
-void Tile::display()
-{
-    if(this->pieceColor == WHITE)
-    {
-        this->setPixmap(QPixmap(":/Images/pawn_white.svg"));
-    }
-
-    else if(this->pieceColor == BLACK)
-    {
-        this->setPixmap(QPixmap(":/Images/pawn_black.svg"));
+        this->setPixmap(QPixmap(":/Images/black.png"));
     }
     else{ // EMPTY
         this->clear();
@@ -43,9 +27,9 @@ void Tile::display()
 }
 void Tile::tileDisplay()
 {
-
     if(this->tileColor)
         this->setStyleSheet("QLabel {background-color: rgb(120, 120, 90);}:hover{background-color: rgb(170,85,127);}");
     else
-        this->setStyleSheet("QLabel {background-color: rgb(211, 211, 158);}:hover{background-color: rgb(170,95,127);}");
+        this->setStyleSheet("QLabel {background-color: rgb(211, 211, 158);}:hover{background-color: rgb(170,85,127);}");
+
 }

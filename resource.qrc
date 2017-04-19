@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/white_blur.png</file>
+        <file>Images/black_blur.png</file>
+        <file>Images/tile.png</file>
+        <file>Images/white.png</file>
+        <file>Images/black.png</file>
+        <file>Images/profile.png</file>
+        <file>Images/play.png</file>
+        <file>Images/aboutme.png</file>
+    </qresource>
+</RCC>

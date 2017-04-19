@@ -2,9 +2,9 @@
 #define TILE_H
 
 #include <QLabel>
+#include <QMessageBox>
 #include <QDebug>
 
-#include <unordered_set>
 #include <set>
 #include <vector>
 
