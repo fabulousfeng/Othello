@@ -2,30 +2,47 @@
 #define OTHELLO_H
 
 #include "tile.h"
-
+#include <QTimer>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 #define SIZE 8
-#define ONEPLAYER 1
-#define TWOPLAYER 2
+#define ONEPLAYER 0
+#define TWOPLAYER 1
+#define EASY 0
+#define HARD 1
+
 class othello{
 private:
     static std::set<std::pair<int,int>> next;
     static std::set<std::pair<int,int>> empty_set;
+
+public:
+    static QLabel *label;
     static QLabel *score1;
     static QLabel *score2;
-public:
+    static QLabel *player1;
+    static QLabel *player2;
+    static QLabel *name1;
+    static QLabel *name2;
     static QWidget *myWidget;
     static int turn;
     static bool running;
     static int mode;
+    static int difficulty;
     static std::vector<std::vector<Tile*> > tile;
 
+    othello(QWidget *myWidget);
     static void init();
     static void game_update(int x, int y);
     static void update_next();
-    static void update_board(int x, int y);
+    static void update_board(int x, int y, bool fade);
     static void show_next(bool show);
     static void score_update();
-    othello(QWidget *myWidget);
+    static void check_game();
+    static void show_turn();
+    static void robot_easy();
+    static int utility_easy(int x, int y);
+    static void robot_hard();
 
 protected:
     static const std::vector<std::pair<int,int>> dirs;
@@ -50,5 +67,29 @@ public:
     }
 };
 
+
+class Delay: public QObject {
+public:
+Delay(int duration) {
+QTimer::singleShot(duration, this, SLOT(deleteLater()));
+}
+};
+
+class Fader : public QObject {
+public:
+Fader(QWidget* target, double start, double end, int fade) {
+    auto effect = new QGraphicsOpacityEffect(this);
+    target->setGraphicsEffect(effect);
+
+    auto anim = new QPropertyAnimation(effect, "opacity", this);
+    connect(anim, &QPropertyAnimation::finished, this, &Fader::deleteLater);
+    anim->setDuration(fade);
+    anim->setStartValue(start);
+    anim->setEndValue(end);
+    anim->setEasingCurve(QEasingCurve::OutQuad);
+    anim->start();
+}
+
+};
 
 #endif // OTHELLO_H

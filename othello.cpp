@@ -1,18 +1,29 @@
 #include "othello.h"
+#include <cassert>
 extern bool start;
+
 int othello::turn = WHITE; // white go first
 bool othello::running = false;
+
 // the main board (SIZE*SIZE)
 QWidget* othello::myWidget = NULL;
+
 int othello::mode = ONEPLAYER;
+int othello::difficulty = EASY;
+
 auto othello::tile = std::vector<std::vector<Tile*>>(SIZE, std::vector<Tile*>(SIZE, NULL));
 
 std::set<std::pair<int,int>> othello::empty_set;
 
 std::set<std::pair<int,int>> othello::next;
 
+QLabel* othello::label = NULL;
 QLabel* othello::score1 = NULL;
 QLabel* othello::score2 = NULL;
+QLabel* othello::player1 = NULL;
+QLabel* othello::player2 = NULL;
+QLabel* othello::name1 = NULL;
+QLabel* othello::name2 = NULL;
 
 const std::vector<std::pair<int,int>> othello::dirs = {
         {-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1}
@@ -75,39 +86,104 @@ void othello::init(){
     othello::empty_set.erase(std::make_pair(4,3));
 
 
-    othello::update_next(); // update the list for all the possible next stepss
-    QLabel *player1,*player2;
-    QLabel *name1,*name2;
-    // user infomation
-    if(othello::mode == ONEPLAYER){
-        player1 = new QLabel(othello::myWidget);
-        name1 = new QLabel("Feng", othello::myWidget);
-        othello::score1 = new QLabel("Feng's Score: 2", othello::myWidget);
+    othello::update_next(); // update the list for all the possible next steps
 
-        player2 = new QLabel(othello::myWidget);
-        name2 = new QLabel("You", othello::myWidget);
-        othello::score2 = new QLabel("Your Score: 2", othello::myWidget);
+    // user infomation
+
+    if(othello::mode == ONEPLAYER){
+
+        othello::label = new QLabel("Your(White) turn",othello::myWidget);
+
+        othello::player1 = new QLabel(othello::myWidget);
+        othello::name1 = new QLabel("Feng (Black)", othello::myWidget);
+        othello::score1 = new QLabel("Score: 2", othello::myWidget);
+
+        othello::player2 = new QLabel(othello::myWidget);
+        othello::name2 = new QLabel("You (White)", othello::myWidget);
+        othello::score2 = new QLabel("Score: 2", othello::myWidget);
     }
     else{
-        player1 = new QLabel(othello::myWidget);
-        name1 = new QLabel("Player 1", othello::myWidget);
-        othello::score1 = new QLabel("Player 1's Score: 2", othello::myWidget);
 
-        player2 = new QLabel(othello::myWidget);
-        name2 = new QLabel("Player 2", othello::myWidget);
-        score2 = new QLabel("Player 2's Score: 2", othello::myWidget);
+        othello::label = new QLabel("Player 1's(White) turn",othello::myWidget);
+
+        othello::player1 = new QLabel(othello::myWidget);
+        othello::name1 = new QLabel("Player 2 (Black)", othello::myWidget);
+        othello::score1 = new QLabel("Score: 2", othello::myWidget);
+
+        othello::player2 = new QLabel(othello::myWidget);
+        othello::name2 = new QLabel("Player 1 (White)", othello::myWidget);
+        othello::score2 = new QLabel("Score: 2", othello::myWidget);
     }
-    name1->setGeometry(125,460,80,20);
-    othello::score1->setGeometry(120,485,180,40);
-    player1->setGeometry(100,350,100,100);
-    player1->setPixmap(QPixmap(":/Images/profile.png"));
 
-    name2->setGeometry(125,210,80,20);
+    othello::label->setGeometry(500,30,300,50);
+    othello::label->setStyleSheet("QLabel {color:red; font-size: 25px}");
+
+    othello::name1->setGeometry(125,460,120,20);
+    othello::score1->setGeometry(120,485,180,40);
+    othello::player1->setGeometry(100,350,100,100);
+    othello::player1->setPixmap(QPixmap(":/Images/profile.png"));
+
+    othello::name2->setGeometry(125,210,120,20);
     othello::score2->setGeometry(120,235,180,40);
-    player2->setGeometry(100,100,100,100);
-    player2->setPixmap(QPixmap(":/Images/profile.png"));
+    othello::player2->setGeometry(100,100,100,100);
+    othello::player2->setPixmap(QPixmap(":/Images/profile.png"));
 
     othello::show_next(true);
+}
+void othello::check_game(){
+    int score1_ = 0;  // Feng or player 2 (black)
+    int score2_ = 0;  // You or player 1 (white)
+    for(int i = 0; i < SIZE; ++i){
+        for(int j = 0; j < SIZE; ++j){
+            if(othello::tile[i][j]->pieceColor == WHITE){
+                ++score2_;
+            }
+            else if(othello::tile[i][j]->pieceColor == BLACK){
+                ++score1_;
+            }
+        }
+    }
+    if(othello::mode == ONEPLAYER){
+        if(score1_ > score2_){
+            QMessageBox::about(othello::myWidget,"Result","Sorry, you(White) lost!");
+        }
+        else if(score1_ < score2_){
+            QMessageBox::about(othello::myWidget,"Result","Congrats, you(White) win!");
+        }
+        else{
+            QMessageBox::about(othello::myWidget,"Result","It is a tie!");
+        }
+    }
+    else{ // two players
+        if(score1_ > score2_){
+            QMessageBox::about(othello::myWidget,"Result","Player 2(Black) wins!");
+        }
+        else if(score1_ < score2_){
+            QMessageBox::about(othello::myWidget,"Result","Player 1(White) wins!");
+        }
+        else{
+            QMessageBox::about(othello::myWidget,"Result","It is a tie!");
+        }
+
+    }
+}
+void othello::show_turn(){
+    if(othello::mode == TWOPLAYER){
+        if(othello::turn == WHITE){
+            othello::label->setText("Player 1's(White) turn");
+        }
+        else{
+            othello::label->setText("Player 2's(Black) turn");
+        }
+    }
+    else if(othello::mode == ONEPLAYER){
+        if(othello::turn == WHITE){
+            othello::label->setText("Your(White) turn");
+        }
+        else{
+            othello::label->setText("Feng's(Black) turn");
+        }
+    }
 }
 
 void othello::game_update(int x, int y){
@@ -115,22 +191,41 @@ void othello::game_update(int x, int y){
         QMessageBox::information(othello::myWidget,"Tips", "Please click Play Now to start!");
         return;
     }
-    if(!othello::tile[x][y]) return;
+    if(othello::mode == ONEPLAYER && othello::turn != WHITE) return;// can not make a step if it is not your turn
+    if(!othello::tile[x][y]) return; // for safe, error checking
     if(othello::tile[x][y]->pieceColor != EMPTY) return;  // must put in an empty position
 
     if(othello::next.find(std::make_pair(x,y)) == othello::next.end()) return; // must put the pieces in the next available position
 
-    othello::running = true;
+    if(!othello::running) {
+        othello::running = true;
+    }
+    othello::show_next(false); // hide all possible moves in the last step
 
-    othello::show_next(false);
-    othello::update_board(x, y); // update the borad of the game
+    othello::update_board(x, y, false); // update the borad of the game
 
     othello::turn = 1 - othello::turn; // switch to the next player
     othello::update_next(); // now the next list should have all next available positions for the next player
+
+    othello::show_turn();
+
     if(othello::next.empty()){
-        QMessageBox::about(othello::myWidget,"Result","You lost!");
+
+        othello::running = false; // game is ended!
+        start = false;
+        // judge who wins the game
+        othello::check_game();
+        return;
     }
+
+
     othello::show_next(true);
+    if(othello::mode == ONEPLAYER && othello::difficulty == EASY){
+        othello::robot_easy();
+    }
+    else if(othello::mode == ONEPLAYER && othello::difficulty == HARD){
+        othello::robot_hard();
+    }
 }
 
 void othello::update_next(){
@@ -173,11 +268,15 @@ void othello::update_next(){
     }
 }
 
-void othello::update_board(int x, int y){
+void othello::update_board(int x, int y, bool fade){
     // pop out from the empty set
     othello::empty_set.erase(std::make_pair(x,y));
     // update the tile for which clicked by the player
-    othello::tile[x][y]->display(othello::turn);
+    if(fade){
+        othello::tile[x][y]->fadeIn(othello::turn, 500);
+    }else{
+        othello::tile[x][y]->display(othello::turn);
+    }
 
     for(auto dir : dirs){
         // for all the directions
@@ -195,11 +294,14 @@ void othello::update_board(int x, int y){
             for(int i = 1; i < k; ++i){
                 x_new = x + i * dir.first;
                 y_new = y + i * dir.second;
-                othello::tile[x_new][y_new]->display(othello::turn);
+                if(fade){
+                    othello::tile[x_new][y_new]->fadeIn(othello::turn, 1800);
+                }else{
+                    othello::tile[x_new][y_new]->display(othello::turn);
+                }
             }
         }
     }
-
     othello::score_update();
 }
 void othello::show_next(bool show){
@@ -227,17 +329,69 @@ void othello::score_update(){
             }
         }
     }
-    std::string s1,s2;
-    if(othello::mode == ONEPLAYER){
-        std::string s1 = "Feng's Score: " + std::to_string(score1_);
-        std::string s2 = "Your Score: " + std::to_string(score2_);
-    }
-    else{
-        std::string s1 = "Player 1's Score: " + std::to_string(score1_);
-        std::string s2 = "Player 2's Score: " + std::to_string(score2_);
-    }
+    std::string s1 = "Score: " + std::to_string(score1_);
+    std::string s2 = "Score: " + std::to_string(score2_);
 
     othello::score1->setText(QString::fromStdString(s1));
     othello::score2->setText(QString::fromStdString(s2));
+
+}
+void othello::robot_easy(){
+    // robot use the black color, so this turn must be BLACK
+    // the easy robot, which use a greedy stratage to make the next move
+
+    assert(othello::turn == BLACK); // this function only works for robot which uses BLACK
+    assert(othello::mode == ONEPLAYER); // this function only works for one player mode
+    othello::show_next(false); // hide all possible moves in the last step
+
+    int utility_max = 0; // only focus on the current profit, a greedy stratage
+    int x_max = 0;
+    int y_max = 0;
+    for(auto iter = othello::next.begin(); iter != othello::next.end(); ++iter){
+        auto current_utility = utility_easy(iter->first, iter->second);
+        if(current_utility > utility_max){
+            utility_max = current_utility;
+            x_max = iter->first;
+            y_max = iter->second;
+        }
+    }
+
+    othello::update_board(x_max, y_max, true);
+    othello::turn = 1 - othello::turn; // switch back to player
+    othello::update_next(); // now the next list should have all next available positions for the next player
+    othello::show_turn();
+    if(othello::next.empty()){
+        othello::running = false; // game is ended!
+        start = false;
+        // judge who wins the game
+        othello::check_game();
+        return;
+    }
+
+    othello::show_next(true);
+
+}
+int othello::utility_easy(int x, int y){
+
+   int utility = 0;
+    for(auto dir : dirs){
+        // for all the directions
+        int k = 1;
+        int x_new = x + k * dir.first;
+        int y_new = y + k * dir.second;
+        while(x_new >= 0 && x_new < SIZE && y_new >= 0 && y_new < SIZE && othello::tile[x_new][y_new]->pieceColor == 1 - othello::turn){
+            // travese this direction
+            ++k;
+            x_new = x + k * dir.first;
+            y_new = y + k * dir.second;
+        }
+        if(x_new >= 0 && x_new < SIZE && y_new >= 0 && y_new < SIZE && othello::tile[x_new][y_new]->pieceColor == othello::turn){
+            // the last while loop terminate because we meet the same pieceColor, we can update the board now
+            utility += (k - 1);
+        }
+    }
+    return utility;
+}
+void othello::robot_hard(){
 
 }

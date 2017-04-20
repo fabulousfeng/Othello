@@ -49,7 +49,7 @@ border-radius: 3px;</string>
    <property name="geometry">
     <rect>
      <x>1000</x>
-     <y>380</y>
+     <y>430</y>
      <width>180</width>
      <height>70</height>
     </rect>
@@ -58,21 +58,28 @@ border-radius: 3px;</string>
     <string/>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>410</x>
-     <y>10</y>
-     <width>191</width>
-     <height>70</height>
+     <x>500</x>
+     <y>30</y>
+     <width>300</width>
+     <height>50</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size: 25px;
+color: red</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>1029</x>
-     <y>221</y>
+     <x>1020</x>
+     <y>190</y>
      <width>141</width>
      <height>101</height>
     </rect>
@@ -101,6 +108,38 @@ border-radius: 3px;</string>
       </property>
       <property name="autoExclusive">
        <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>1020</x>
+     <y>310</y>
+     <width>141</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QRadioButton" name="radioButton_3">
+      <property name="text">
+       <string>Easy</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="radioButton_4">
+      <property name="text">
+       <string>Hard</string>
       </property>
      </widget>
     </item>

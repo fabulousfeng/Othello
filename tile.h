@@ -4,7 +4,10 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QDebug>
-
+#include <QTimer>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QThread>
 #include <set>
 #include <vector>
 
@@ -28,8 +31,14 @@ public:
     //Methods
     void mousePressEvent(QMouseEvent *event);
     void display(int pieceColor);
-    void display();
     void tileDisplay();
+    void fadeIn(int pieceColor, unsigned long ms);
 };
-
+class Sleeper : public QThread
+{
+public:
+    static void usleep(unsigned long usecs){QThread::usleep(usecs);}
+    static void msleep(unsigned long msecs){QThread::msleep(msecs);}
+    static void sleep(unsigned long secs){QThread::sleep(secs);}
+};
 #endif // TILE_H
