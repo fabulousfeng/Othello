@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         othello_widget.cpp \
     othello.cpp \
-    tile.cpp
+    tile.cpp \
+    robot.cpp
 
 HEADERS  += othello_widget.h \
     othello.h \
-    tile.h
+    tile.h \
+    robot.h
 
 FORMS    += othello_widget.ui
 

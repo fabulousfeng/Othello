@@ -5,6 +5,9 @@
 #include <QTimer>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
+
+#include <climits>
+
 #define SIZE 8
 #define ONEPLAYER 0
 #define TWOPLAYER 1

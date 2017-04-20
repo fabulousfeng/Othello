@@ -1,7 +1,7 @@
 #include "othello.h"
 #include <cassert>
 extern bool start;
-
+extern std::vector<std::vector<int>> weights;
 int othello::turn = WHITE; // white go first
 bool othello::running = false;
 
@@ -220,6 +220,7 @@ void othello::game_update(int x, int y){
 
 
     othello::show_next(true);
+
     if(othello::mode == ONEPLAYER && othello::difficulty == EASY){
         othello::robot_easy();
     }
@@ -344,7 +345,7 @@ void othello::robot_easy(){
     assert(othello::mode == ONEPLAYER); // this function only works for one player mode
     othello::show_next(false); // hide all possible moves in the last step
 
-    int utility_max = 0; // only focus on the current profit, a greedy stratage
+    int utility_max = INT_MIN; // only focus on the current profit, a greedy stratage
     int x_max = 0;
     int y_max = 0;
     for(auto iter = othello::next.begin(); iter != othello::next.end(); ++iter){
@@ -372,26 +373,35 @@ void othello::robot_easy(){
 
 }
 int othello::utility_easy(int x, int y){
+    // use a greedy stratage to make the next step
+    // which means the robot always select the step that can reverse to get the largest rewards by the weights
+    // Of course it does not consider future effects so we consider it is a easy mode
+    // it means our opponents may have a big reverse in the future game
 
-   int utility = 0;
+   int utility = weights[x][y]; // the immediate reward
+
     for(auto dir : dirs){
         // for all the directions
+        int temp = 0;
         int k = 1;
         int x_new = x + k * dir.first;
         int y_new = y + k * dir.second;
         while(x_new >= 0 && x_new < SIZE && y_new >= 0 && y_new < SIZE && othello::tile[x_new][y_new]->pieceColor == 1 - othello::turn){
             // travese this direction
+            temp += weights[x_new][y_new];// the weight of this new position we may get
             ++k;
             x_new = x + k * dir.first;
             y_new = y + k * dir.second;
+
         }
         if(x_new >= 0 && x_new < SIZE && y_new >= 0 && y_new < SIZE && othello::tile[x_new][y_new]->pieceColor == othello::turn){
             // the last while loop terminate because we meet the same pieceColor, we can update the board now
-            utility += (k - 1);
+            utility += temp;
         }
     }
     return utility;
 }
 void othello::robot_hard(){
+
 
 }
