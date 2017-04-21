@@ -25,7 +25,7 @@ weights = {
 };
 
 
-# Future improvements
+# Future work
 The weights can be improved by more experiments. For example, a machine learning stratage can be utilized .
 
 # About me
