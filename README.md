@@ -1,5 +1,6 @@
 # Othello Game Interface 
-<img width="1277" alt="othello" src="https://cloud.githubusercontent.com/assets/15232969/25267054/6f3418f8-2641-11e7-86ba-6c5ca98553d2.png">
+<img width="1278" alt="screen shot 2017-04-21 at 6 48 35 pm" src="https://cloud.githubusercontent.com/assets/15232969/25298512/75ee7396-26c3-11e7-803f-d836844971ee.png">
+
 
 # Introduction
 
