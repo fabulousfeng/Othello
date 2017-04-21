@@ -2,6 +2,8 @@
 #define OTHELLO_H
 
 #include "tile.h"
+#include "robot.h"
+
 #include <QTimer>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
@@ -9,17 +11,19 @@
 #include <climits>
 
 #define SIZE 8
+
 #define ONEPLAYER 0
 #define TWOPLAYER 1
+
 #define EASY 0
-#define HARD 1
+#define MEDIUM 1
+#define HARD 2
 
 class othello{
-private:
-    static std::set<std::pair<int,int>> next;
-    static std::set<std::pair<int,int>> empty_set;
 
 public:
+    static std::set<std::pair<int,int>> next;
+    static std::set<std::pair<int,int>> empty_set;
     static QLabel *label;
     static QLabel *score1;
     static QLabel *score2;
@@ -33,6 +37,7 @@ public:
     static int mode;
     static int difficulty;
     static std::vector<std::vector<Tile*> > tile;
+    static const std::vector<std::pair<int,int>> dirs;
 
     othello(QWidget *myWidget);
     static void init();
@@ -45,11 +50,8 @@ public:
     static void show_turn();
     static void robot_easy();
     static int utility_easy(int x, int y);
-    static void robot_hard();
-
-protected:
-    static const std::vector<std::pair<int,int>> dirs;
-
+    static int utility();
+    static void computer(int depth); // medium = 5, hard = 10
 };
 
 class Border // this class will draw the border of the othello game
@@ -73,9 +75,9 @@ public:
 
 class Delay: public QObject {
 public:
-Delay(int duration) {
-QTimer::singleShot(duration, this, SLOT(deleteLater()));
-}
+    Delay(int duration) {
+        QTimer::singleShot(duration, this, SLOT(deleteLater()));
+    }
 };
 
 class Fader : public QObject {

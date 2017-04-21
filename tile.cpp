@@ -60,3 +60,11 @@ void Tile::tileDisplay()
         this->setStyleSheet("QLabel {background-color: rgb(211, 211, 158);}:hover{background-color: rgb(170,85,127);}");
 
 }
+Tile & Tile::operator= (const Tile & other){
+    pieceColor = other.pieceColor;
+    row = other.row;
+    col = other.col;
+    tileNum = other.tileNum;
+    tileColor = other.tileColor;
+    return *this;
+}

@@ -7,7 +7,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
     auto myWidget = new Othello_Widget();
     myWidget->setGeometry(0,0,1370,700);
 

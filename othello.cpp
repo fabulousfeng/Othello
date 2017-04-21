@@ -210,7 +210,6 @@ void othello::game_update(int x, int y){
     othello::show_turn();
 
     if(othello::next.empty()){
-
         othello::running = false; // game is ended!
         start = false;
         // judge who wins the game
@@ -218,14 +217,19 @@ void othello::game_update(int x, int y){
         return;
     }
 
-
     othello::show_next(true);
 
     if(othello::mode == ONEPLAYER && othello::difficulty == EASY){
+        // single player, easy mode
         othello::robot_easy();
     }
+    else if(othello::mode == ONEPLAYER && othello::difficulty == MEDIUM){
+        // single player, medium mode
+        othello::computer(DEPTH_MEDIUM);
+    }
     else if(othello::mode == ONEPLAYER && othello::difficulty == HARD){
-        othello::robot_hard();
+        // single player, hard mode
+        othello::computer(DEPTH_HARD);
     }
 }
 
@@ -343,6 +347,7 @@ void othello::robot_easy(){
 
     assert(othello::turn == BLACK); // this function only works for robot which uses BLACK
     assert(othello::mode == ONEPLAYER); // this function only works for one player mode
+
     othello::show_next(false); // hide all possible moves in the last step
 
     int utility_max = INT_MIN; // only focus on the current profit, a greedy stratage
@@ -357,7 +362,9 @@ void othello::robot_easy(){
         }
     }
 
+    // update the game borad by the chosen action
     othello::update_board(x_max, y_max, true);
+
     othello::turn = 1 - othello::turn; // switch back to player
     othello::update_next(); // now the next list should have all next available positions for the next player
     othello::show_turn();
@@ -401,7 +408,75 @@ int othello::utility_easy(int x, int y){
     }
     return utility;
 }
-void othello::robot_hard(){
+void othello::computer(int depth){
 
+    othello::show_next(false); // hide all possible moves in the last step
 
+    State current_state;
+    // do a deep copy
+    current_state.board = std::vector<std::vector<Tile*>>(SIZE, std::vector<Tile*>(SIZE, NULL));
+    for(int i = 0; i < SIZE; ++i){
+        for(int j = 0; j < SIZE; ++j){
+            current_state.board[i][j] = new Tile();
+
+            current_state.board[i][j]->tileColor = othello::tile[i][j]->tileColor;
+            current_state.board[i][j]->pieceColor = othello::tile[i][j]->pieceColor;
+            current_state.board[i][j]->row = i;
+            current_state.board[i][j]->col = j;
+            current_state.board[i][j]->tileNum = othello::tile[i][j]->tileNum;
+        }
+    }
+    current_state.next = othello::next;
+
+    current_state.empty_set = othello::empty_set;
+
+    // create an instance of our robot(hard)
+    robot comp(current_state, depth);
+
+    // using alpha_beta_prunning to search for an action
+    std::pair<int, int> action = comp.alpha_beta_search();
+
+    // do an update in the game board
+
+    int x_max = action.first;
+    int y_max = action.second;
+
+    othello::update_board(x_max, y_max, true);
+
+    othello::turn = 1 - othello::turn; // switch back to player
+    othello::update_next(); // now the next list should have all next available positions for the next player
+    othello::show_turn();
+    if(othello::next.empty()){
+        othello::running = false; // game is ended!
+        start = false;
+        // judge who wins the game
+        othello::check_game();
+        return;
+    }
+    othello::show_next(true);
+
+    //free memory
+    for(int i = 0; i < SIZE; i++){
+        for(int j = 0; j < SIZE; ++j){
+                delete current_state.board[i][j];
+        }
+    }
+    int u = othello::utility();
+//    std::string str = "current: ";
+//    str += std::to_string(u);
+//    QMessageBox::about(othello::myWidget, "me", QString::fromStdString(str));
+}
+int othello::utility(){
+        int u = 0; // utility
+        for(auto i = 0; i < SIZE; ++i){
+            for(auto j = 0; j < SIZE; ++j){
+                if(othello::tile[i][j]->pieceColor == BLACK){
+                    u += weights[i][j];
+                }
+                else if(othello::tile[i][j]->pieceColor == WHITE){
+                    u -= weights[i][j];
+                }
+            }
+        }
+        return u;
 }

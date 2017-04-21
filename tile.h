@@ -27,7 +27,7 @@ public:
     //Constructors
     Tile(QWidget* pParent=0, Qt::WindowFlags f=0) : QLabel(pParent, f) {};
     Tile(const QString& text, QWidget* pParent = 0, Qt::WindowFlags f = 0) : QLabel(text, pParent, f){};
-
+    Tile & operator= (const Tile & other);
     //Methods
     void mousePressEvent(QMouseEvent *event);
     void display(int pieceColor);
