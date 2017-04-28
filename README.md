@@ -8,7 +8,7 @@ QT framework is used to build the interface of this game.
 
 This game supports one or two players. 
 
-For one player mode, it uses Minimax search algorithm in general. Alpha-Beta prunning search is also used to minimize the branches of the whole searching trees.
+For one player mode, it uses Minimax search algorithm in general. Alpha-Beta pruning search is also used to minimize the branches of the whole game searching tree.
 
 The static heuristic maxtrix(8•8) for calculating utility of the game state is as follows:
 weights = {
